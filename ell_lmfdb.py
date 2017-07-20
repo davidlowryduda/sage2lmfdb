@@ -7,23 +7,29 @@ class EllipticCurve_rational_field_lmfdb(EllipticCurve_rational_field):
         self._json = json
         ainvs = ast.literal_eval(json['xainvs'])
         EllipticCurve_rational_field.__init__(self,ainvs)
-        if 'conductor' in self._json:
-            self._set_conductor(json['conductor'])
-        if 'x-coordinates_of_integral_points' in self._json:
-            self._lmfdb_x_integral_points=ast.literal_eval(self._json['x-coordinates_of_integral_points'])
-        if  'rank' in self._json:
-            self._set_rank(self._json['rank'])
-        if 'degree' in self._json:
-            self._set_modular_degree(self._json['degree'])
-        if 'gens' in self._json:
-            self._set_gens([map(int, P[1:-1].split(":")) for P in self._json['gens']])
-        if 'lmfdb_label' in self._json:
-            self._lmfdb_label = self._json['lmfdb_label']
-        if 'torsion' in self._json:
-            self._set_torsion_order(self._json['torsion'])
-        if 'regulator' in self._json:
-            self._lmfdb_regulator=float(self._json['regulator'])
+        if 'conductor' in json:
+            # If we wanted to be parallel to sage, we might try to do:
+            #self._set_conductor(json['conductor'])
+            self._lmfdb_conductor = json['conductor']
+            # But this runs much slower.
+        if 'x-coordinates_of_integral_points' in json:
+            self._lmfdb_x_integral_points=ast.literal_eval(json['x-coordinates_of_integral_points'])
+        if  'rank' in json:
+            # Interestingly, this yields very quick evaluation
+            self._set_rank(json['rank'])
+            #self._lmfdb_rank = json['rank']
+        if 'degree' in json:
+            self._set_modular_degree(json['degree'])
+        if 'gens' in json:
+            self._set_gens([map(int, P[1:-1].split(":")) for P in json['gens']])
+        if 'lmfdb_label' in json:
+            self._lmfdb_label = json['lmfdb_label']
+        if 'torsion' in json:
+            self._set_torsion_order(json['torsion'])
+        if 'regulator' in json:
+            self._lmfdb_regulator=float(json['regulator'])
 
+    # With sample documentation note
     def regulator(self,**kwargs):
         r"""
         Return the regulator of the curve. This is taken from the lmfdb if available.
@@ -37,6 +43,13 @@ class EllipticCurve_rational_field_lmfdb(EllipticCurve_rational_field):
             return self._lmfdb_regulator
         except AttributeError:
             return super(EllipticCurve_rational_field_lmfdb, self).regulator(**kwargs)
+
+#    def rank(self, **kwargs):
+#        try:
+#            return self._lmfdb_rank
+#        except AttributeError:
+#            print("Exception")
+#            return super(EllipticCurve_rational_field_lmfdb,self).rank(**kwargs)
 
     def conductor(self, **kwargs):
         try:

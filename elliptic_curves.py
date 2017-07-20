@@ -104,6 +104,7 @@ def search(**kwargs):
                 'x-coordinaates_of_integral_points',
                 'gens',
                 'lmfdb_label',
+                'rank'
                 ]
     fields = lmfdb_api._get_fields_from_api_page(URL_API, searches, dbfields,
                         EllipticCurve_rational_field_lmfdb, **kwargs)
